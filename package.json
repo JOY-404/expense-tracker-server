@@ -1,0 +1,33 @@
+{
+  "name": "expense-tracker-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JOY-404/expense-tracker-server.git"
+  },
+  "author": "Janmejoy Sahoo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JOY-404/expense-tracker-server/issues"
+  },
+  "homepage": "https://github.com/JOY-404/expense-tracker-server#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-handlebars": "^6.0.5",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.19.0"
+  }
+}
