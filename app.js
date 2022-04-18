@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv').config();
 const sequelize = require('./util/database');
-const cors = require('cors');
+var cors = require('cors');
 const PORT = process.env.PORT || 8000;
 
 // Databases
@@ -15,7 +15,7 @@ const AuthenticationRoutes = require('./routes/AuthenticationRoutes');
 
 // Middlewares
 app.use(cors());
-//app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/auth', AuthenticationRoutes);
 
