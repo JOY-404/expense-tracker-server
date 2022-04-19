@@ -3,6 +3,29 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+exports.authenticate = (req, res, next) => {
+  try {
+    const token = req.header('authorization');
+    const tokenData = jwt.verify(token, process.env.TOKEN_SECRET)
+    const userId = tokenData.id;
+    //console.log(userId);
+    User.findByPk(userId).then(user => {
+      if (user) {
+        req.user = user;
+        next();
+      }
+      else {
+        // User not found
+        throw new Error('User doesn\'t exist');
+      }
+    }).catch(err => { throw new Error(err) });
+  }
+  catch(err) {
+    console.log(err);
+    return res.status(401).json({ success: false, msg: err });
+  }
+}
+
 exports.postAddNewUser = (req, res, next) => {
   const name = req.body.name;
   const email = req.body.email;
@@ -38,7 +61,17 @@ exports.postAddNewUser = (req, res, next) => {
                 password: hashedPW
               })
             })
-            .then(resp => res.status(200).json({ success: true, msg: 'Signup Successful' }))
+            .then(user => {
+              // create standard categories for the user
+              user.createCategory({ category: 'Apparel' });
+              user.createCategory({ category: 'Education' });
+              user.createCategory({ category: 'Food' });
+              user.createCategory({ category: 'Gift' });
+              user.createCategory({ category: 'Household' });
+              user.createCategory({ category: 'Health' });
+              user.createCategory({ category: 'Petrol' });
+              res.status(200).json({ success: true, msg: 'Signup Successful' })
+            })
             .catch(err => res.status(500).json({ success: false, msg: err }));
         }
         else {

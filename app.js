@@ -9,20 +9,25 @@ const PORT = process.env.PORT || 8000;
 
 // Databases
 const User = require('./models/user');
+const Category = require('./models/category');
+const Expense = require('./models/expense');
 
 // Routes
 const AuthenticationRoutes = require('./routes/AuthenticationRoutes');
+const UserRoutes = require('./routes/UserRoutes');
 
 // Middlewares
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/auth', AuthenticationRoutes);
+app.use('/user', UserRoutes);
 
-// Just for checking - remove it later
-app.use((req, res, next) => {
-    res.status(200).json({msg: 'running'});
-})
+User.hasMany(Expense);
+Expense.belongsTo(User);
+User.hasMany(Category);
+Category.belongsTo(User);
+Category.hasMany(Expense);
 
 sequelize
     //.sync({ force: true })
