@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 8000;
 const User = require('./models/user');
 const Category = require('./models/category');
 const Expense = require('./models/expense');
+const Order = require('./models/order');
 
 // Routes
 const AuthenticationRoutes = require('./routes/AuthenticationRoutes');
@@ -28,6 +29,8 @@ Expense.belongsTo(User);
 User.hasMany(Category);
 Category.belongsTo(User);
 Category.hasMany(Expense);
+User.hasMany(Order);
+Order.belongsTo(User);
 
 sequelize
     //.sync({ force: true })

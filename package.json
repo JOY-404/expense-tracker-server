@@ -29,6 +29,7 @@
     "express-handlebars": "^6.0.5",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
+    "razorpay": "^2.8.1",
     "sequelize": "^6.19.0"
   }
 }

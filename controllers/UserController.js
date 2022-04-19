@@ -6,22 +6,27 @@ const saltRounds = 10;
 exports.authenticate = (req, res, next) => {
   try {
     const token = req.header('authorization');
+    //console.log(token);
     const tokenData = jwt.verify(token, process.env.TOKEN_SECRET)
     const userId = tokenData.id;
     //console.log(userId);
     User.findByPk(userId).then(user => {
       if (user) {
         req.user = user;
+        //res.status(200).json('check');
         next();
       }
       else {
         // User not found
-        throw new Error('User doesn\'t exist');
+        return res.status(401).json({ success: false, msg: 'User doesn\'t exist' });
+        //throw new Error('User doesn\'t exist');
       }
-    }).catch(err => { throw new Error(err) });
+    }).catch(err => {
+      return res.status(401).json({ success: false, msg: err });
+      //throw new Error(err) 
+    });
   }
-  catch(err) {
-    console.log(err);
+  catch (err) {
     return res.status(401).json({ success: false, msg: err });
   }
 }
@@ -70,7 +75,7 @@ exports.postAddNewUser = (req, res, next) => {
               user.createCategory({ category: 'Household' });
               user.createCategory({ category: 'Health' });
               user.createCategory({ category: 'Petrol' });
-              res.status(200).json({ success: true, msg: 'Signup Successful' })
+              res.status(200).json({ success: true, msg: 'Signup Successful' });
             })
             .catch(err => res.status(500).json({ success: false, msg: err }));
         }
@@ -100,8 +105,16 @@ exports.postLogin = (req, res, next) => {
             .then(isMatched => {
               if (isMatched) {
                 // password is correct
-                const token = generateAccessToken({ id: users[0].id });
-                res.status(200).json({ token: token, success: true, msg: 'Successfully Logged In' });
+                const token = generateAccessToken({ id: users[0].id, isPremiumMember: users[0].isPremiumMember });
+                res.status(200).json({ 
+                  token: token, 
+                  name: users[0].name,
+                  email: users[0].email,
+                  phone: users[0].phone,
+                  theme: users[0].isPremiumMember,
+                  success: true, 
+                  msg: 'Successfully Logged In' 
+                });
               }
               else {
                 // password is incorrect
