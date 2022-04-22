@@ -1,6 +1,9 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const sendgrid = require('@sendgrid/mail');
+
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 const saltRounds = 10;
 
 exports.authenticate = (req, res, next) => {
@@ -147,3 +150,37 @@ exports.postLogin = (req, res, next) => {
 function generateAccessToken(det) {
   return jwt.sign(det, process.env.TOKEN_SECRET);
 }
+
+exports.postResetPassword = (req, res, next) => {
+  try {
+    const toEmail = req.body.email;
+    const msg = {
+      to: toEmail, // Change to your recipient
+      from: 'janmejoysahoo007@gmail.com', // Change to your verified sender
+      subject: 'Password Reset Link',
+      //text: '',
+      html: 'Click on the link to reset your password. <strong>LINK</strong>',
+    }
+
+    sendgrid
+      .send(msg)
+      .then(response => {
+        // console.log(response[0].statusCode);
+        // console.log(response[0].headers);
+        // console.log('Mail sent successfully');
+        if (response[0].statusCode == 202) {
+          res.status(200).json('Mail Sent');
+        }
+        else {
+          res.status(400).json('Mail Sent Error');
+        }
+      })
+      .catch(error => {
+        //console.error(error);
+        res.status(500).json('Mail Sent Error');
+      });
+  }
+  catch (err) {
+    return res.status(500).json({ success: false, msg: err });
+  }
+};
